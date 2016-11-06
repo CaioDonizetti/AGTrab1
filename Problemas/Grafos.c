@@ -52,7 +52,7 @@ int destroiGrafo(grafo **g){
     if (!(*g)) return 0;
     for (i=1;i<(*g)->nVertices;i++)
         if (!(eliminaLista(&(*g)->l[i]))) return 0;
-    free((*g)->l[0]);  //Como os aeroportos come�am com o codigo 1, n�o � criada uma lista para a primeira posi��o do vetor
+    free((*g)->l[0]);  //Como os vertices come�am com o codigo 1, n�o � criada uma lista para a primeira posi��o do vetor
     free(*g);
     return 1;
 }

@@ -151,20 +151,20 @@ lista_MN menorCaminho(grafo *g, int origem, int destino){
     lista_MN lista = criaLista_MN(2,origem,destino);  //Cria lista, defininda a inser��o pela cauda
     if (!lista) { printf("    ERRO AO CRIAR LISTA DE MENOR CAMINHO!"); return NULL; }
 
-    //Inserindo a cidade de origem
+    //Inserindo o vertice de origem
     dado inf;
     inf.cod = origem;
     inf.distancia = 0;
-    insereNovo_MN(lista,inf, NULL);  //Insere na lista a cidade de origem
+    insereNovo_MN(lista,inf, NULL);  //Insere na lista o vertice de origem
     retorno = menorElemento(lista,&no); //Procura o no que contem o menor elemento
 
     //Loop para encontrar o menor caminho
     while (no->informacao.cod!=destino){  //Enquanto o menor caminho n�o for o que leva � cidade de destino...
 
         if (!retorno) { printf("\n\n    NAO E POSSIVEL CHEGAR A %s SAINDO DE %s!\n\n",destino, origem); return NULL; }
-        listaGrafo = retornaLista(g,no->informacao.cod);  //Retorna as conexoes da cidade com menor caminho atual...
+        listaGrafo = retornaLista(g,no->informacao.cod);  //Retorna as conexoes dos vertices com menor caminho atual...
 
-        for (i=0;i<qtdaElementos(listaGrafo);i++){ //Para cada elemento da lista (que s�o as cidades conectada � cidade de menor distancia no mom...
+        for (i=0;i<qtdaElementos(listaGrafo);i++){ //Para cada elemento da lista 
             dadoLista = retornaInfo(listaGrafo,i);
             if (dadoLista){
                 inf.cod = dadoLista->cod;
@@ -178,7 +178,7 @@ lista_MN menorCaminho(grafo *g, int origem, int destino){
         retorno = menorElemento(lista,&no); //Procura o no que contem o menor elemento
     }
 
-    //Criando nova lista para inserir as cidades encontradas por onde se deve passar no menor caminho
+    //Criando nova lista para inserir os vertices encontrados por onde se deve passar no menor caminho
     lista_MN listaResult = (criaLista_MN(1,origem,destino)); //Inser��o pela cabe�a
     while (no){
         retorno = insereNovo_MN(listaResult,no->informacao,NULL);
@@ -205,10 +205,10 @@ int eliminaLista_MN(lista_MN *l){
 }
 
 
-int listaLista_MN(lista_MN l){
+int listaLista_MN(lista_MN l, int *caminho){
     float distanciaTotal;
     int i, cont = 1;
-    char toString[15],ord[4];
+    char toString[15];
     if (!l) return 0;
     if (l->n == 0) {
         printf("\nLista sem registros!\n");
@@ -217,32 +217,21 @@ int listaLista_MN(lista_MN l){
     noLista_MN *aux, *ant;
     aux = l->head;
     ant = aux;
-    printf("\n\n      | Or. |           Vertice                             | Dist. Ver. Anterior   | Distancia Parcial     |");
-    printf("\n      |-------------------------------------------------------------------------------------------------|");
+
     while(aux){
-        itoa(cont,ord,10);
-        printf("\n      | %s",ord);
-        for (i=strlen(ord);i<4;i++) printf(" ");
-        distanciaTotal = aux->informacao.distancia;
-        printf("| %d  ",aux->informacao.cod);
-        if (aux->informacao.cod < 10) printf(" ");
-       
-        for (i=2;i<35;i++)
-            printf(" ");
-        sprintf(toString,"%.2f",(aux->informacao.distancia - ant->informacao.distancia));
-        printf("| %s KM",toString);
-        for (i=(strlen(toString)+3);i<22;i++)
-            printf(" ");
-        sprintf(toString,"%.2f",aux->informacao.distancia);
-        printf("| %s KM",toString);
-        for (i=(strlen(toString)+3);i<22;i++)
-            printf(" ");
-        printf("|");
+        if(aux->informacao.cod>=10){
+            printf("\n      |         %d        |",aux->informacao.cod);
+        }else{
+            printf("\n      |         %d         |",aux->informacao.cod);
+        }
+        
+        caminho[aux->informacao.cod] = 1;
         ant = aux;
         aux = aux->prox;
         cont ++;
     }
-    printf("\n      |-------------------------------------------------------------------------------------------------|");
-    printf("\n        DISTANCIA TOTAL: %.2f \n\n",distanciaTotal);
+
+    printf("\n      |                   |");
+
     return 1;
 }
