@@ -1,16 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Árvore.h"
 #include "ListaDinamica.h"
 
 typedef struct m{info dado; struct m *prox;} noLista;
 typedef struct n{
     noLista *head;
-    int n, ord, codAeroporto;
+    int n, ord, cod;
 } noDescritor;
 
-lista criaLista(int k, int codAeroporto){
+lista criaLista(int k, int cod){
     lista aux;
     if((k<0)||(k>2)) return NULL;
     aux = (noDescritor *)malloc(sizeof(noDescritor));
@@ -18,27 +17,37 @@ lista criaLista(int k, int codAeroporto){
     aux->head = NULL;
     aux->ord = k;
     aux->n = 0;
-    aux->codAeroporto = codAeroporto;
+    aux->cod = cod;
     return aux;
 }
 
-int retornaCodAeroporto(lista l){
-    if (!l) return -1;
-    return (l->codAeroporto);
-}
 
-
-info *retornaInfo(lista l, int v){
-    int i = 0;
-    noLista *aux;
-    aux = l->head;
-    while ((aux) && (i < v)){
-        aux = aux->prox;
-        i++;
+int eliminaLista(lista *l){
+    if (!(*l)) return 0;
+    noLista *p,*aux;
+    p = aux = (*l)->head;
+    while(p){
+        aux = p;
+        p=aux->prox;
+        free(aux);
     }
-    return &(aux->dado);
+    (*l)->n = 0;
+    free(*l);
+    return 1;
 }
 
+int insereNovo (lista l, info *nd){
+    if(!(l)) return 0;
+    switch (l->ord){
+        case 0: return (insereOrd(l, nd));
+                break;
+        case 1: return (insereCabeca(l, nd));
+                break;
+        case 2: return (insereCauda(l, nd));
+                break;
+    }
+    return 0;
+}
 
 int insereCabeca(lista l, info *nd){
     noLista *p;
@@ -94,85 +103,19 @@ int insereCauda (lista l, info *nd){
     return 1;
 }
 
-
-int insereNovo (lista l, info *nd){
-    if(!(l)) return 0;
-    switch (l->ord){
-        case 0: return (insereOrd(l, nd));
-                break;
-        case 1: return (insereCabeca(l, nd));
-                break;
-        case 2: return (insereCauda(l, nd));
-                break;
-    }
-    return 0;
-}
-
-int eliminaLista(lista *l){
-    if (!(*l)) return 0;
-    noLista *p,*aux;
-    p = aux = (*l)->head;
-    while(p){
-        aux = p;
-        p=aux->prox;
-        free(aux);
-    }
-    (*l)->n = 0;
-    free(*l);
-    return 1;
-}
-
-int removeNo(lista l,int codigo){
-    if (!l) return 0;
-    noLista *aux,*pant;
-    aux = l->head;
-    pant = l->head;
-    while ((aux) && (aux->dado.cod != codigo)){
-        pant = aux;
-        aux = aux->prox;
-    }
-    if (aux){
-        if (l->head == aux)
-            l->head = aux->prox;
-        else
-            pant->prox = aux->prox;
-        free(aux);
-        l->n--;
-        return 1;
-    }
-    return 0;
-}
-
-int buscaCodigo(lista l, int codigo, info *dr){
-    if (!l) return 0;
-    noLista *aux;
-    aux = l->head;
-    while((aux->prox) && (aux->dado.cod != codigo))
-        aux = aux->prox;
-    if (aux->dado.cod == codigo){
-        *dr = aux->dado;
-        return 1;
-    }
-    return 0;
-}
-
-void listaLista(lista l,TAD_ABB arvore){
-    if (!l) return;
-    if (l->n == 0) {
-        printf("\nLista sem registros!\n");
-        return;
-    }
-    noLista *aux;
-    aux = l->head;
-    while(aux){
-        printf("      * %s (%.0f)\n",TAD_ABB_buscaCidade(arvore,aux->dado.cod),aux->dado.distancia);
-        aux = aux->prox;
-    }
-    printf("\n");
-    return;
-}
-
 int qtdaElementos(lista l){
     if (!l) return -1;
     return l->n;
 }
+
+info *retornaInfo(lista l, int v){
+    int i = 0;
+    noLista *aux;
+    aux = l->head;
+    while ((aux) && (i < v)){
+        aux = aux->prox;
+        i++;
+    }
+    return &(aux->dado);
+}
+
