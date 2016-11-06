@@ -1,0 +1,5 @@
+numero de vertices
+vertices que compoem a aresta 1
+vertices que compoem a aresta 2
+vertices que compoem a aresta 3
+...
